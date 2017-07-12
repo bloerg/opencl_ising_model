@@ -1,7 +1,7 @@
 export CPLUS_INCLUDE_PATH=/opt/intel/opencl/include
 export LIBRARY_PATH=/opt/intel/opencl
 
-HEADERS=
+HEADERS=cl.hpp
 SOURCES=Ising.cpp
 
 ifeq ($(CONFIG),debug)
@@ -13,7 +13,7 @@ endif
 all: ising
 
 ising: $(HEADERS) $(SOURCES) Makefile
-	g++ $(SOURCES) -I../common -lOpenCL -oIsing -std=gnu++0x $(OPT)
+	g++ $(SOURCES) -I ./ -lOpenCL -oIsing -std=gnu++0x $(OPT)
 
 clean:
 	rm -f Ising
