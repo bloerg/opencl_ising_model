@@ -2,8 +2,10 @@
 #include <iostream>
 #include <fstream>
 
-#define __CL_ENABLE_EXCEPTIONS
+#define CL_HPP_ENABLE_EXCEPTIONS instead
 #include <CL/cl2.hpp>
+
+
 
 int main() {
     std::vector<cl::Platform> all_platforms;
@@ -61,20 +63,10 @@ int main() {
         exit(1);
     }
     
-        //~ char lattice[16];
-        //~ cl::Buffer lattice_buffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY, sizeof(lattice));
-        //~ cl::Kernel ising_kernel(ising_program, "Ising", &err);
-        //~ ising_kernel.setArg(0, lattice_buffer);
-        
-        //~ cl::CommandQueue queue(context, device);
-        
-        //~ queue.enqueueReadBuffer(lattice_buffer, CL_TRUE, 0, sizeof(lattice), lattice);
-        //~ std::cout << lattice;
-        //~ std::cin.get(); // wait for keypress
+
+        cl_float lattice[16];
     
-        char lattice[16];
-    
-        cl::Buffer lattice_buffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY, sizeof(lattice));
+        cl::Buffer lattice_buffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY, 16 * sizeof(cl_float));
         cl::CommandQueue queue(context, device);
         
         
@@ -84,8 +76,10 @@ int main() {
         //~ queue.enqueueNDRangeKernel(ising_kernel, cl::NullRange, cl::NullRange, cl::NullRange);
         queue.enqueueNDRangeKernel(ising_kernel, cl::NDRange(0), cl::NDRange(10), cl::NDRange(1));
 
-        queue.enqueueReadBuffer(lattice_buffer, CL_TRUE, 0, sizeof(lattice), lattice);
-        std::cout << lattice;
+        queue.enqueueReadBuffer(lattice_buffer, CL_TRUE, 0, 16*sizeof(cl_float), lattice);
+        for (int c=0;c<16;c++) {
+            std::cout << lattice[c] << "\n";
+        }
         std::cin.get(); // wait for keypress
 
 }
