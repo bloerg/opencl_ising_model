@@ -1,7 +1,7 @@
 export CPLUS_INCLUDE_PATH=/opt/intel/opencl/include
 export LIBRARY_PATH=/opt/intel/opencl
 
-HEADERS=cl.hpp
+HEADERS=
 SOURCES=Ising.cpp
 
 ifeq ($(CONFIG),debug)
