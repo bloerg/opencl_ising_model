@@ -25,7 +25,7 @@
 // Mersenne twister algorithm constants. Please refer for details
 // http://en.wikipedia.org/wiki/Mersenne_twister
 // Matsumoto, M.; Nishimura, T. (1998). "Mersenne twister: a 623-dimensionally equidistributed uniform pseudo-random number generator".
-// ACM Transactions on Modeling and Computer Simulation 8 (1): 330.
+// ACM Transactions on Modeling and Computer Simulation 8 (1)
 
 // degree of Mersenne twister recurrence
 #define N 624
@@ -46,7 +46,6 @@
 
 
 
-
 __kernel void ising(__global float* lattice) {
 
     // Global ID
@@ -59,7 +58,7 @@ __kernel void ising(__global float* lattice) {
     // Precalculate auxiliary variables
     tfloat int_to_float_normalize_factor = ONE/((tfloat)DIVISOR); // for float random number scaling
 
-    // State indexes
+    // State indeces
     int i, iCurrentMiddle, iCurrent;
     // Mersenne twister generated random number
     unsigned int mt_rnd_num;

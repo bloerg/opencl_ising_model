@@ -18,14 +18,14 @@ int main() {
     std::cout << "Using platform: "<<default_platform.getInfo<CL_PLATFORM_NAME>()<<"\n";
     
     std::vector<cl::Device> all_devices;
-    default_platform.getDevices(CL_DEVICE_TYPE_ALL, &all_devices);
+    default_platform.getDevices(CL_DEVICE_TYPE_CPU, &all_devices); // oder CL_DEVICE_TYPE_GPU, CL_DEVICE_TYPE_ALL
     if (all_devices.size() == 0) {
         std::cout << "No devices found. Check OpenCL installation!\n";
         exit(1);
     }
     
-    //Use CPU (1) or GPU (0)
-    cl::Device device = all_devices[1];
+    //Use CPU (1) or GPU (0) in case of CL_DEVICE_TYPE_ALL before
+    cl::Device device = all_devices[0];
     std::cout << "Using device: " << device.getInfo<CL_DEVICE_NAME>() << "\n";
     
     
@@ -63,20 +63,21 @@ int main() {
         exit(1);
     }
     
-
-        cl_float lattice[16];
+	const unsigned int lattice_edge_length = 4;
+        cl_float lattice[lattice_edge_length*lattice_edge_length];
     
-        cl::Buffer lattice_buffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY, 16 * sizeof(cl_float));
+        cl::Buffer lattice_buffer(context, CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY, lattice_edge_length * lattice_edge_length * sizeof(cl_float));
+    //    cl::Buffer lattice_edge_length_buffer(context, CL_MEM_READ_ONLY | CL_MEM_HOST_READ_ONLY, sizeof(unsigned int));
         cl::CommandQueue queue(context, device);
         
         
         cl::Kernel ising_kernel(ising_program, "ising");
         ising_kernel.setArg(0, lattice_buffer);
+    //    ising_kernel.setArg(1, lattice_edge_length);
         
-        //~ queue.enqueueNDRangeKernel(ising_kernel, cl::NullRange, cl::NullRange, cl::NullRange);
         queue.enqueueNDRangeKernel(ising_kernel, cl::NDRange(0), cl::NDRange(10), cl::NDRange(1));
 
-        queue.enqueueReadBuffer(lattice_buffer, CL_TRUE, 0, 16*sizeof(cl_float), lattice);
+        queue.enqueueReadBuffer(lattice_buffer, CL_TRUE, 0, lattice_edge_length * lattice_edge_length * sizeof(cl_float), lattice);
         for (int c=0;c<16;c++) {
             std::cout << lattice[c] << "\n";
         }
